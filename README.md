@@ -2,7 +2,7 @@
 
 An interactive FAQ page for **Advance Funds Network (AFN)** powered by an ElevenLabs AI voice agent. Users can read frequently asked business loan questions or speak directly with an AI agent in real time.
 
-Live site: [afn-demo.vercel.app](https://afn-demo.vercel.app)
+Live site: [afnvoiceagent.vercel.app](https://afnvoiceagent.vercel.app)
 
 ---
 

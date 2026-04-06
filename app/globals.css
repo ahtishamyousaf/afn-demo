@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy:      #000C5D;
+  --muted:     #4E5688;
+  --bg-light:  #F6F6F6;
+  --card-blue: #ECF2FF;
+  --white:     #FFFFFF;
+  --black:     #000000;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-jakarta);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #000C5D;
+  font-family: var(--font-jakarta), sans-serif;
 }
+
+@keyframes orb-ring-out {
+  0%   { transform: scale(1);   opacity: 0.45; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+.orb-active .ring1 { animation: orb-ring-out 1.8s ease-out          infinite; }
+.orb-active .ring2 { animation: orb-ring-out 1.8s ease-out 0.6s     infinite; }
+.orb-active .ring3 { animation: orb-ring-out 1.8s ease-out 1.2s     infinite; }
+.orb-active .orb-sphere { animation: orb-breathe 1.4s ease-in-out   infinite; }

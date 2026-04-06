@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Advance Funds Network — Voice Agent Demo",
   description: "ElevenLabs AI voice agent demo for Advance Funds Network",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/favicon.ico",
   },
 };
 

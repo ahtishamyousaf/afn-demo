@@ -3,17 +3,7 @@ import VoiceWidgetLoader from "@/components/VoiceWidgetLoader";
 
 function AFNLogo() {
   return (
-    <div className="flex items-center gap-2">
-      <svg width="32" height="30" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="28,2 48,38 8,38" fill="#22C55E" />
-        <polygon points="16,6 36,42 0,42" fill="#000C5D" opacity="0.92" />
-        <polygon points="22,10 34,34 10,34" fill="#3B82F6" opacity="0.6" />
-      </svg>
-      <div className="flex flex-col leading-tight">
-        <span className="text-[12px] font-bold text-[#000c5d] tracking-[0.04em]">advance</span>
-        <span className="text-[9px] font-semibold text-[#000c5d] tracking-[0.12em] uppercase">funds network</span>
-      </div>
-    </div>
+    <img src="/logo.svg" alt="Advance Funds Network" height={32} style={{ height: 32, width: "auto" }} />
   );
 }
 

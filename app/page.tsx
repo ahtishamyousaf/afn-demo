@@ -3,7 +3,7 @@ import VoiceWidgetLoader from "@/components/VoiceWidgetLoader";
 
 function AFNLogo() {
   return (
-    <img src="/logo.svg" alt="Advance Funds Network" height={32} style={{ height: 32, width: "auto" }} />
+    <img src="/logo.svg" alt="Advance Funds Network" height={37} style={{ height: 37, width: "auto" }} />
   );
 }
 
@@ -26,7 +26,7 @@ export default function Page() {
 
       {/* Main */}
       <main className="flex-1 flex items-center px-6 py-8 md:px-10 md:py-10">
-        <div className="max-w-5xl w-full mx-auto">
+        <div className="max-w-[1200px] w-full mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-16 items-start">
 
             {/* Left */}

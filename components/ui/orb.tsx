@@ -389,7 +389,7 @@ void main() {
     vec3 color1 = vec3(0.0, 0.0, 0.0);
     vec3 color2 = uColor1;
     vec3 color3 = uColor2;
-    vec3 color4 = min(uColor2 + vec3(0.35, 0.45, 0.35), vec3(1.0));
+    vec3 color4 = vec3(0.72, 1.0, 0.82); // light mint highlight
 
     float luminance = mix(color.r, 1.0 - color.r, uInverted);
     color.rgb = colorRamp(luminance, color1, color2, color3, color4);

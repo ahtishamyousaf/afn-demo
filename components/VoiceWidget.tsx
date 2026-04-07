@@ -70,7 +70,7 @@ function ConversationWidget() {
       <div style={{ position: "relative", width: 240, height: 240 }}>
         <Orb
           agentState={agentState}
-          colors={["#3fb228", "#3fb228"]}
+          colors={["#0f3a92", "#3fb228"]}
           className="absolute inset-0 w-full h-full"
         />
 

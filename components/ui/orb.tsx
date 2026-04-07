@@ -389,7 +389,7 @@ void main() {
     vec3 color1 = vec3(0.0, 0.0, 0.0);
     vec3 color2 = uColor1;
     vec3 color3 = uColor2;
-    vec3 color4 = vec3(0.85, 0.97, 1.0); // light cyan-white highlight
+    vec3 color4 = vec3(0.55, 0.82, 0.78); // soft muted teal, no white
 
     float luminance = mix(color.r, 1.0 - color.r, uInverted);
     color.rgb = colorRamp(luminance, color1, color2, color3, color4);

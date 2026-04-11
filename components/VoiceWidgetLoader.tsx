@@ -1,16 +1,26 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import Script from "next/script";
 
-const VoiceWidget = dynamic(() => import("@/components/VoiceWidget"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-48">
-      <div className="w-10 h-10 rounded-full border-2 border-[#16a34a] border-t-transparent animate-spin" />
-    </div>
-  ),
-});
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "elevenlabs-convai": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & { "agent-id": string },
+        HTMLElement
+      >;
+    }
+  }
+}
 
 export default function VoiceWidgetLoader() {
-  return <VoiceWidget />;
+  return (
+    <>
+      <Script
+        src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+        strategy="lazyOnload"
+      />
+      <elevenlabs-convai agent-id="agent_4101knscx09yfybre31jcbgj86mf" />
+    </>
+  );
 }

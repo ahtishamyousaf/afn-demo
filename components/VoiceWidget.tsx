@@ -30,12 +30,13 @@ function ConversationWidget() {
   const conversation = useConversation();
   const [hasPermission, setHasPermission] = useState(false);
   const [permissionError, setPermissionError] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [nameSubmitted, setNameSubmitted] = useState(false);
 
   const isConnected = conversation.status === "connected";
   const isConnecting = conversation.status === "connecting";
   const isActive = isConnected || isConnecting;
 
-  // Map ElevenLabs status to Orb AgentState
   const agentState: AgentState = !isActive
     ? null
     : isConnecting
@@ -60,8 +61,12 @@ function ConversationWidget() {
     if (isConnected) { conversation.endSession(); return; }
     const ok = hasPermission || (await requestPermission());
     if (!ok) return;
-    conversation.startSession({ agentId: AGENT_ID, connectionType: "websocket" });
-  }, [isConnected, hasPermission, requestPermission, conversation]);
+    conversation.startSession({
+      agentId: AGENT_ID,
+      connectionType: "websocket",
+      dynamicVariables: { first_name: firstName.trim() || "there" },
+    });
+  }, [isConnected, hasPermission, requestPermission, conversation, firstName]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, width: "100%", fontFamily: "var(--font-jakarta), sans-serif" }}>
@@ -74,7 +79,7 @@ function ConversationWidget() {
           className="absolute inset-0 w-full h-full"
         />
 
-        {/* Speech bubble starting from center */}
+        {/* Speech bubble */}
         {!isActive && (
           <div style={{
             position: "absolute",
@@ -105,6 +110,45 @@ function ConversationWidget() {
         )}
       </div>
 
+      {/* Name input — shown before first call */}
+      {!isActive && !nameSubmitted && (
+        <div style={{ display: "flex", gap: 8, width: "100%", maxWidth: 280 }}>
+          <input
+            type="text"
+            placeholder="Your first name"
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter" && firstName.trim()) setNameSubmitted(true); }}
+            style={{
+              flex: 1,
+              padding: "8px 12px",
+              borderRadius: 8,
+              border: "1.5px solid #C7D2FE",
+              fontSize: 13,
+              color: "#000C5D",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+          />
+          <button
+            onClick={() => { if (firstName.trim()) setNameSubmitted(true); }}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 8,
+              border: "none",
+              background: "#000C5D",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            OK
+          </button>
+        </div>
+      )}
+
       {/* Status */}
       {isActive && (
         <p style={{ fontSize: 13, color: "#4E5688", margin: 0 }}>
@@ -116,29 +160,31 @@ function ConversationWidget() {
         <p style={{ fontSize: 12, color: "#DC2626", textAlign: "center", margin: 0 }}>{permissionError}</p>
       )}
 
-      {/* Call button */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        <button
-          onClick={handleCall}
-          style={{
-            width: 56, height: 56,
-            borderRadius: "50%",
-            border: "none",
-            cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: isConnected ? "#DC2626" : "#000C5D",
-            boxShadow: "0 4px 14px rgba(0,12,93,0.32)",
-            transition: "transform 0.15s ease",
-          }}
-          onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")}
-          onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-        >
-          {isConnected ? <EndCallIcon /> : <OutgoingCallIcon />}
-        </button>
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#000C5D" }}>
-          {isConnected ? "End Call" : "Call Agent"}
-        </span>
-      </div>
+      {/* Call button — shown after name is submitted */}
+      {(nameSubmitted || isActive) && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+          <button
+            onClick={handleCall}
+            style={{
+              width: 56, height: 56,
+              borderRadius: "50%",
+              border: "none",
+              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: isConnected ? "#DC2626" : "#000C5D",
+              boxShadow: "0 4px 14px rgba(0,12,93,0.32)",
+              transition: "transform 0.15s ease",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")}
+            onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            {isConnected ? <EndCallIcon /> : <OutgoingCallIcon />}
+          </button>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#000C5D" }}>
+            {isConnected ? "End Call" : `Call Agent`}
+          </span>
+        </div>
+      )}
 
     </div>
   );

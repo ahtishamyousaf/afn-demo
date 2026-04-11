@@ -19,7 +19,7 @@ export default function Page() {
         <div className="w-full flex items-center justify-between gap-4">
           <AFNLogo />
           <span className="text-sm md:text-base font-semibold text-[#000c5d] tracking-tight">
-            Eleven labs voice agent demo
+            AFN Outbound Voice Agent
           </span>
         </div>
       </header>

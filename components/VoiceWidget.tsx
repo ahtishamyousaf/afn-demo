@@ -62,7 +62,7 @@ function ConversationWidget() {
       return;
     }
     setPermissionError("");
-    conversation.startSession({ agentId: AGENT_ID });
+    conversation.startSession({ agentId: AGENT_ID, connectionType: "websocket" });
   }, [isConnected, conversation]);
 
   return (
@@ -148,7 +148,7 @@ function ConversationWidget() {
 
 export default function VoiceWidget() {
   return (
-    <ConversationProvider agentId={AGENT_ID}>
+    <ConversationProvider agentId={AGENT_ID} connectionType="websocket">
       <ConversationWidget />
     </ConversationProvider>
   );

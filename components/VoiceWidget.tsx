@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useConversation, ConversationProvider } from "@elevenlabs/react";
+import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { Orb } from "@/components/ui/orb";
 import type { AgentState } from "@/components/ui/orb";
 
@@ -27,21 +27,15 @@ function EndCallIcon() {
 }
 
 function ConversationWidget() {
+  const conversation = useConversation();
+  const [hasPermission, setHasPermission] = useState(false);
   const [permissionError, setPermissionError] = useState("");
-
-  const conversation = useConversation({
-    agentId: AGENT_ID,
-    onDisconnect: () => setPermissionError(""),
-    onError: (error) => {
-      console.error("ElevenLabs error:", error);
-      setPermissionError("Connection failed. Please try again.");
-    },
-  });
 
   const isConnected = conversation.status === "connected";
   const isConnecting = conversation.status === "connecting";
   const isActive = isConnected || isConnecting;
 
+  // Map ElevenLabs status to Orb AgentState
   const agentState: AgentState = !isActive
     ? null
     : isConnecting
@@ -50,20 +44,24 @@ function ConversationWidget() {
     ? "talking"
     : "listening";
 
-  const handleCall = useCallback(async () => {
-    if (isConnected) {
-      conversation.endSession();
-      return;
-    }
+  const requestPermission = useCallback(async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
+      setHasPermission(true);
+      setPermissionError("");
+      return true;
     } catch {
       setPermissionError("Microphone access is required.");
-      return;
+      return false;
     }
-    setPermissionError("");
+  }, []);
+
+  const handleCall = useCallback(async () => {
+    if (isConnected) { conversation.endSession(); return; }
+    const ok = hasPermission || (await requestPermission());
+    if (!ok) return;
     conversation.startSession({ agentId: AGENT_ID, connectionType: "websocket" });
-  }, [isConnected, conversation]);
+  }, [isConnected, hasPermission, requestPermission, conversation]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, width: "100%", fontFamily: "var(--font-jakarta), sans-serif" }}>
@@ -76,7 +74,7 @@ function ConversationWidget() {
           className="absolute inset-0 w-full h-full"
         />
 
-        {/* Speech bubble */}
+        {/* Speech bubble starting from center */}
         {!isActive && (
           <div style={{
             position: "absolute",

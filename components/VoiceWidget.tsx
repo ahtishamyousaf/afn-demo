@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ConversationProvider, useConversation } from "@elevenlabs/react";
+import { useConversation } from "@elevenlabs/react";
 import { Orb } from "@/components/ui/orb";
 import type { AgentState } from "@/components/ui/orb";
 
@@ -26,16 +26,22 @@ function EndCallIcon() {
   );
 }
 
-function ConversationWidget() {
-  const conversation = useConversation();
-  const [hasPermission, setHasPermission] = useState(false);
+export default function VoiceWidget() {
   const [permissionError, setPermissionError] = useState("");
+
+  const conversation = useConversation({
+    agentId: AGENT_ID,
+    onDisconnect: () => setPermissionError(""),
+    onError: (error) => {
+      console.error("ElevenLabs error:", error);
+      setPermissionError("Connection failed. Please try again.");
+    },
+  });
 
   const isConnected = conversation.status === "connected";
   const isConnecting = conversation.status === "connecting";
   const isActive = isConnected || isConnecting;
 
-  // Map ElevenLabs status to Orb AgentState
   const agentState: AgentState = !isActive
     ? null
     : isConnecting
@@ -44,24 +50,20 @@ function ConversationWidget() {
     ? "talking"
     : "listening";
 
-  const requestPermission = useCallback(async () => {
+  const handleCall = useCallback(async () => {
+    if (isConnected) {
+      conversation.endSession();
+      return;
+    }
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      setHasPermission(true);
-      setPermissionError("");
-      return true;
     } catch {
       setPermissionError("Microphone access is required.");
-      return false;
+      return;
     }
-  }, []);
-
-  const handleCall = useCallback(async () => {
-    if (isConnected) { conversation.endSession(); return; }
-    const ok = hasPermission || (await requestPermission());
-    if (!ok) return;
-    conversation.startSession({ agentId: AGENT_ID, connectionType: "websocket" });
-  }, [isConnected, hasPermission, requestPermission, conversation]);
+    setPermissionError("");
+    conversation.startSession({ agentId: AGENT_ID });
+  }, [isConnected, conversation]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, width: "100%", fontFamily: "var(--font-jakarta), sans-serif" }}>
@@ -74,7 +76,7 @@ function ConversationWidget() {
           className="absolute inset-0 w-full h-full"
         />
 
-        {/* Speech bubble starting from center */}
+        {/* Speech bubble */}
         {!isActive && (
           <div style={{
             position: "absolute",
@@ -141,13 +143,5 @@ function ConversationWidget() {
       </div>
 
     </div>
-  );
-}
-
-export default function VoiceWidget() {
-  return (
-    <ConversationProvider agentId={AGENT_ID} connectionType="websocket">
-      <ConversationWidget />
-    </ConversationProvider>
   );
 }

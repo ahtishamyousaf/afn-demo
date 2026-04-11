@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useConversation } from "@elevenlabs/react";
+import { useConversation, ConversationProvider } from "@elevenlabs/react";
 import { Orb } from "@/components/ui/orb";
 import type { AgentState } from "@/components/ui/orb";
 
@@ -26,7 +26,7 @@ function EndCallIcon() {
   );
 }
 
-export default function VoiceWidget() {
+function ConversationWidget() {
   const [permissionError, setPermissionError] = useState("");
 
   const conversation = useConversation({
@@ -143,5 +143,13 @@ export default function VoiceWidget() {
       </div>
 
     </div>
+  );
+}
+
+export default function VoiceWidget() {
+  return (
+    <ConversationProvider agentId={AGENT_ID}>
+      <ConversationWidget />
+    </ConversationProvider>
   );
 }
